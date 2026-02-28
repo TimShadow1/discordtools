@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Tools Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bot-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bot-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #5865F2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+        }
+
+        .auth-btn {
+            background: #5865F2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .auth-btn:hover {
+            background: #4752C4;
+        }
+
+        .auth-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tool-card h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #5865F2;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #5865F2;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .preview-box {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .preview-box h4 {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .preview-content {
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-online {
+            background: #3ba55c;
+            box-shadow: 0 0 10px #3ba55c;
+        }
+
+        .status-offline {
+            background: #ed4245;
+        }
+
+        .btn {
+            background: #5865F2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #4752C4;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .emoji-preview {
+            font-size: 48px;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="auth-section">
+                <div class="bot-info">
+                    <div class="bot-avatar">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <div>
+                        <h1>Discord Tools Online</h1>
+                        <p id="botStatus">
+                            <span class="status-indicator status-offline"></span>
+                            Bot Not Authorized
+                        </p>
+                    </div>
+                </div>
+                <button class="auth-btn" id="authBtn" onclick="authorizeBot()">
+                    Authorize Bot
+                </button>
+            </div>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="tools-grid">
+            <!-- Bio Tool -->
+            <div class="tool-card">
+                <h2>Bio Tools</h2>
+                <div class="form-group">
+                    <label>Enter your bio (one letter per line):</label>
+                    <textarea class="form-control" id="bioInput" placeholder="h
+he
+hel
+hell
+hello" rows="5"></textarea>
+                </div>
+                <button class="btn" id="saveBioBtn" onclick="saveBio()" disabled>Save Bio</button>
+                <div class="preview-box">
+                    <h4>Live Preview:</h4>
+                    <div class="preview-content" id="bioPreview"></div>
+                </div>
+            </div>
+
+            <!-- Name Tool -->
+            <div class="tool-card">
+                <h2>Name Tools</h2>
+                <div class="form-group">
+                    <label>Enter your name (one letter per line):</label>
+                    <textarea class="form-control" id="nameInput" placeholder="j
+ja
+jam
+jamm
+jammy" rows="5"></textarea>
+                </div>
+                <button class="btn" id="saveNameBtn" onclick="saveName()" disabled>Save Name</button>
+                <div class="preview-box">
+                    <h4>Live Preview:</h4>
+                    <div class="preview-content" id="namePreview"></div>
+                </div>
+            </div>
+
+            <!-- Status Emoji Tool -->
+            <div class="tool-card">
+                <h2>Status Emoji</h2>
+                <div class="form-group">
+                    <label>Enter emoji:</label>
+                    <input type="text" class="form-control" id="emojiInput" placeholder="🎮, 🎧, 🌙, 💻" value="🎮">
+                </div>
+                <button class="btn" id="setEmojiBtn" onclick="setStatusEmoji()" disabled>Set Status Emoji</button>
+                <div class="emoji-preview" id="emojiPreview">🎮</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script>
+        // State management
+        let isAuthorized = false;
+        let accessToken = null;
+        let userId = null;
+
+        // API Configuration - YOU NEED TO SET THESE
+        const API_URL = 'http://localhost:3000'; // Your backend URL
+        const DISCORD_CLIENT_ID = '1477301598962323546'; // Get from Discord Developer Portal
+        const REDIRECT_URI = 'https://timshadow1.github.io/discordtools'; // Your redirect URI
+
+        // Check if user is already authorized (check for token in URL on callback)
+        function checkAuth() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            
+            if (code) {
+                // We have an authorization code, exchange it for token
+                exchangeCodeForToken(code);
+            } else {
+                // Check local storage for existing token
+                const savedToken = localStorage.getItem('discord_token');
+                const savedUserId = localStorage.getItem('discord_user_id');
+                
+                if (savedToken && savedUserId) {
+                    accessToken = savedToken;
+                    userId = savedUserId;
+                    isAuthorized = true;
+                    updateAuthUI();
+                    enableTools();
+                    showAlert('Successfully restored session!', 'success');
+                }
+            }
+        }
+
+        // Exchange authorization code for access token
+        async function exchangeCodeForToken(code) {
+            try {
+                showAlert('Exchanging code for token...', 'success');
+                
+                // THIS REQUIRES A BACKEND ENDPOINT
+                const response = await fetch(`${API_URL}/api/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to exchange code');
+                }
+
+                const data = await response.json();
+                
+                accessToken = data.access_token;
+                userId = data.user_id;
+                
+                // Store in local storage
+                localStorage.setItem('discord_token', accessToken);
+                localStorage.setItem('discord_user_id', userId);
+                
+                isAuthorized = true;
+                updateAuthUI();
+                enableTools();
+                
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                showAlert('Successfully authorized!', 'success');
+                
+                // Fetch user data
+                await fetchUserData();
+                
+            } catch (error) {
+                console.error('Auth error:', error);
+                showAlert('Authorization failed: ' + error.message, 'error');
+            }
+        }
+
+        // Fetch user data from Discord
+        async function fetchUserData() {
+            if (!accessToken) return;
+
+            try {
+                const response = await fetch('https://discord.com/api/users/@me', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const userData = await response.json();
+                console.log('User data:', userData);
+                
+                // Load user's saved data from your database
+                await loadUserData(userData.id);
+                
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        // Load user data from your database
+        async function loadUserData(userId) {
+            try {
+                const response = await fetch(`${API_URL}/api/user/${userId}/data`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.bio) document.getElementById('bioInput').value = data.bio;
+                    if (data.name) document.getElementById('nameInput').value = data.name;
+                    if (data.emoji) {
+                        document.getElementById('emojiInput').value = data.emoji;
+                        document.getElementById('emojiPreview').textContent = data.emoji;
+                    }
+                    
+                    updatePreviews();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Update UI based on auth state
+        function updateAuthUI() {
+            const authBtn = document.getElementById('authBtn');
+            const botStatus = document.getElementById('botStatus');
+            
+            if (isAuthorized) {
+                authBtn.textContent = 'Authorized ✓';
+                authBtn.disabled = true;
+                botStatus.innerHTML = '<span class="status-indicator status-online"></span> Bot Authorized';
+            } else {
+                authBtn.textContent = 'Authorize Bot';
+                authBtn.disabled = false;
+                botStatus.innerHTML = '<span class="status-indicator status-offline"></span> Bot Not Authorized';
+            }
+        }
+
+        // Enable tools after authorization
+        function enableTools() {
+            document.getElementById('saveBioBtn').disabled = false;
+            document.getElementById('saveNameBtn').disabled = false;
+            document.getElementById('setEmojiBtn').disabled = false;
+        }
+
+        // Authorize bot - redirect to Discord
+        function authorizeBot() {
+            const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
+            window.location.href = discordAuthUrl;
+        }
+
+        // Save bio to database
+        async function saveBio() {
+            if (!isAuthorized) {
+                showAlert('Please authorize the bot first!', 'error');
+                return;
+            }
+
+            const bio = document.getElementById('bioInput').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/${userId}/bio`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ bio })
+                });
+
+                if (response.ok) {
+                    showAlert('Bio saved successfully!', 'success');
+                } else {
+                    throw new Error('Failed to save bio');
+                }
+            } catch (error) {
+                showAlert('Error saving bio: ' + error.message, 'error');
+            }
+        }
+
+        // Save name to database
+        async function saveName() {
+            if (!isAuthorized) {
+                showAlert('Please authorize the bot first!', 'error');
+                return;
+            }
+
+            const name = document.getElementById('nameInput').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/${userId}/name`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                if (response.ok) {
+                    showAlert('Name saved successfully!', 'success');
+                } else {
+                    throw new Error('Failed to save name');
+                }
+            } catch (error) {
+                showAlert('Error saving name: ' + error.message, 'error');
+            }
+        }
+
+        // Set status emoji
+        async function setStatusEmoji() {
+            if (!isAuthorized) {
+                showAlert('Please authorize the bot first!', 'error');
+                return;
+            }
+
+            const emoji = document.getElementById('emojiInput').value;
+            document.getElementById('emojiPreview').textContent = emoji || '🎮';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/${userId}/emoji`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ emoji: emoji || '🎮' })
+                });
+
+                if (response.ok) {
+                    showAlert('Status emoji saved!', 'success');
+                } else {
+                    throw new Error('Failed to save emoji');
+                }
+            } catch (error) {
+                showAlert('Error saving emoji: ' + error.message, 'error');
+            }
+        }
+
+        // Update previews
+        function updatePreviews() {
+            const bioInput = document.getElementById('bioInput');
+            const nameInput = document.getElementById('nameInput');
+            
+            document.getElementById('bioPreview').innerHTML = bioInput.value.replace(/\n/g, '<br>');
+            document.getElementById('namePreview').innerHTML = nameInput.value.replace(/\n/g, '<br>');
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('bioInput').addEventListener('input', updatePreviews);
+        document.getElementById('nameInput').addEventListener('input', updatePreviews);
+        document.getElementById('emojiInput').addEventListener('input', function(e) {
+            document.getElementById('emojiPreview').textContent = e.target.value || '🎮';
+        });
+
+        // Initialize
+        updatePreviews();
+        checkAuth();
+    </script>
+</body>
+</html>
