@@ -3,764 +3,647 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>discordtools.online · bot studio</title>
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Discord Nitro Profile Manager</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: #0a0e1a;
+            background: #1a1b2f;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1300px;
+            max-width: 1200px;
             width: 100%;
-            background: #141b2b;
-            border-radius: 2.5rem;
-            padding: 2.2rem;
-            box-shadow: 0 30px 60px -15px #000000cc;
-            border: 1px solid #2a3150;
+            background: #2b2d42;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        /* Header with auth */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 2.2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            margin-bottom: 30px;
+            background: #1e1f33;
+            padding: 20px;
+            border-radius: 15px;
         }
 
-        .logo h1 {
-            color: white;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #b19cff, #7b87ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo span {
-            font-size: 0.95rem;
-            color: #a0abd5;
-            margin-left: 0.5rem;
-            background: #20273f;
-            padding: 0.2rem 1rem;
-            border-radius: 30px;
-            border: 1px solid #37416b;
-            font-weight: 400;
-        }
-
-        .auth-section {
+        .user-section {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            background: #1e263e;
-            padding: 0.4rem 1rem 0.4rem 1.5rem;
-            border-radius: 60px;
-            border: 1px solid #374475;
+            gap: 20px;
         }
 
-        .bot-avatar {
-            width: 42px;
-            height: 42px;
-            background: #5865f2;
+        .avatar {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
+            background: #5865f2;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 30px;
             color: white;
-            font-size: 1.6rem;
         }
 
-        .auth-info p {
-            color: #a7b5e0;
-            font-size: 0.85rem;
-        }
-
-        .auth-info strong {
+        .user-info {
             color: white;
-            font-weight: 600;
-            font-size: 1rem;
         }
 
-        .auth-btn {
+        .user-info h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .nitro-badge {
+            background: linear-gradient(135deg, #6b81ff, #b57cff);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .login-btn {
             background: #5865f2;
             color: white;
             border: none;
-            padding: 0.6rem 1.6rem;
-            border-radius: 40px;
-            font-weight: 500;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-            border: 1px solid #8692fa;
-        }
-
-        .auth-btn:hover {
-            background: #4752c4;
-            transform: scale(1.02);
-        }
-
-        .auth-btn:disabled {
-            background: #363d68;
-            border-color: #505b92;
-            cursor: default;
-            opacity: 0.9;
-            transform: none;
-        }
-
-        .db-badge {
-            background: #202842;
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
-            color: #b2c3ff;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            border: 1px solid #3b4781;
-        }
-
-        .db-badge i {
-            color: #3ba55c;
-        }
-
-        .pulse {
-            width: 8px;
-            height: 8px;
-            background: #3ba55c;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #3ba55c;
-            animation: pulse 1.5s infinite;
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Tools Grid */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 2rem;
-            margin: 2.2rem 0;
-        }
-
-        .tool-card {
-            background: #0f1629;
-            border-radius: 2rem;
-            padding: 2rem 1.8rem;
-            border: 1px solid #2c3458;
-            transition: all 0.2s;
-        }
-
-        .tool-card:hover {
-            border-color: #6f7cff;
-            box-shadow: 0 15px 35px -20px #8a9aff;
-        }
-
-        .tool-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 2rem;
-        }
-
-        .tool-header i {
-            font-size: 2.2rem;
-            background: linear-gradient(45deg, #94a3ff, #c7b9ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .tool-header h3 {
-            color: white;
-            font-size: 2rem;
+            gap: 10px;
             font-weight: 600;
         }
 
-        .tool-header h3 small {
-            font-size: 1rem;
-            color: #7d8ec0;
-            font-weight: 400;
-            margin-left: 0.3rem;
+        .login-btn:hover {
+            background: #4752c4;
         }
 
-        /* Form elements */
-        .input-label {
-            color: #b2c2f0;
-            font-size: 0.9rem;
-            margin-bottom: 0.6rem;
-            display: block;
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
-        .styled-textarea {
-            width: 100%;
-            background: #0a1020;
-            border: 2px solid #2c345a;
-            border-radius: 1.3rem;
-            padding: 1rem 1.2rem;
+        .preview-card {
+            background: #1e1f33;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .preview-card h3 {
             color: white;
-            font-size: 1rem;
-            font-family: 'Menlo', 'Monaco', monospace;
-            resize: vertical;
-            outline: none;
-            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 20px;
         }
 
-        .styled-textarea:focus {
-            border-color: #6d7eff;
-            box-shadow: 0 0 0 3px rgba(109, 126, 255, 0.2);
+        .profile-preview {
+            background: #2b2d42;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .styled-textarea:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .banner {
+            height: 150px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #ff9f4b, #6b5bff);
+            background-size: 300% 100%;
+            transition: background 0.3s;
         }
 
-        .preview-section {
-            margin-top: 1.8rem;
+        .profile-info {
+            padding: 20px;
+            position: relative;
+            margin-top: -40px;
         }
 
-        .preview-title {
-            color: #8f9fd5;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.6rem;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #5865f2;
+            border: 4px solid #2b2d42;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
-        }
-
-        .preview-box {
-            background: #131b30;
-            border-radius: 1.3rem;
-            padding: 1.2rem;
-            border-left: 5px solid #6a7aff;
-            border: 1px solid #333e6b;
-        }
-
-        .preview-content {
+            justify-content: center;
+            font-size: 40px;
             color: white;
-            font-size: 1.2rem;
-            font-weight: 500;
-            font-family: 'Menlo', 'Monaco', monospace;
-            line-height: 1.7;
-            word-break: break-word;
-            background: #1d2540;
-            padding: 1rem 1.3rem;
-            border-radius: 1rem;
-            min-height: 6rem;
-            border: 1px solid #404e82;
+            margin-bottom: 10px;
         }
 
-        .emoji-row {
+        .profile-name {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .profile-bio {
+            background: #1e1f33;
+            padding: 15px;
+            border-radius: 8px;
+            color: #b5b9e0;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .tools-section {
+            background: #1e1f33;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .tool-group {
+            margin-bottom: 30px;
+        }
+
+        .tool-group h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
             display: flex;
-            gap: 0.8rem;
             align-items: center;
-            margin-bottom: 2rem;
+            gap: 10px;
         }
 
-        .emoji-input {
+        .bio-builder {
+            background: #2b2d42;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .line-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .line-input input {
             flex: 1;
-            background: #0a1020;
-            border: 2px solid #2c345a;
-            border-radius: 40px;
-            padding: 0.9rem 1.2rem;
+            padding: 10px;
+            background: #1e1f33;
+            border: 2px solid #3d405b;
+            border-radius: 5px;
             color: white;
-            font-size: 1.8rem;
-            outline: none;
-            text-align: center;
         }
 
-        .emoji-input:focus {
-            border-color: #6d7eff;
-        }
-
-        .btn-set {
-            background: #2a3457;
+        .line-input button {
+            padding: 10px 20px;
+            background: #5865f2;
             color: white;
             border: none;
-            padding: 0.9rem 2.2rem;
-            border-radius: 40px;
-            font-weight: 500;
+            border-radius: 5px;
             cursor: pointer;
+        }
+
+        .bio-lines {
+            background: #1e1f33;
+            padding: 15px;
+            border-radius: 5px;
+            color: white;
+            font-family: monospace;
+            min-height: 100px;
+        }
+
+        .gradient-picker {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .gradient-option {
+            height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
             transition: 0.2s;
-            border: 1px solid #5563aa;
-            white-space: nowrap;
-            font-size: 1rem;
         }
 
-        .btn-set:hover {
-            background: #3b4680;
+        .gradient-option:hover {
+            transform: scale(1.05);
+            border-color: white;
         }
 
-        .btn-set:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: #2d3660;
+        .gradient-option.selected {
+            border-color: #5865f2;
+            box-shadow: 0 0 15px #5865f2;
         }
 
-        .status-emoji-display {
-            background: #1a2340;
-            border-radius: 60px;
-            padding: 1rem;
-            text-align: center;
-            border: 1px solid #3b4780;
-            margin-top: 0.5rem;
-        }
-
-        .big-emoji {
-            font-size: 4rem;
-            line-height: 1;
-            filter: drop-shadow(0 5px 15px #00000070);
-        }
-
-        .footer {
+        .emoji-selector {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 2.5rem;
-            padding-top: 1.8rem;
-            border-top: 2px solid #262f4e;
-            color: #8593c2;
+            gap: 10px;
             flex-wrap: wrap;
-            gap: 1rem;
         }
 
-        .footer-left {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
+        .emoji-btn {
+            background: #2b2d42;
+            border: 2px solid #3d405b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: 0.2s;
         }
 
-        .db-status {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+        .emoji-btn:hover {
+            background: #5865f2;
+            border-color: #5865f2;
         }
 
-        .footer-right {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
+        .emoji-btn.selected {
+            background: #5865f2;
+            border-color: #5865f2;
         }
 
-        .footer i {
-            color: #6f7ee0;
-            width: 22px;
+        .save-btn {
+            background: #3ba55c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: 0.2s;
         }
 
-        .alert {
-            background: #1f2848;
-            border-left: 5px solid #f0b232;
-            color: #ffde9e;
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            margin-bottom: 1.5rem;
+        .save-btn:hover {
+            background: #2d8b4a;
+        }
+
+        .save-btn:disabled {
+            background: #4a4f6b;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
             display: none;
-            font-weight: 500;
         }
 
-        .alert.show {
+        .status-message.success {
+            background: #3ba55c20;
+            color: #3ba55c;
+            border: 1px solid #3ba55c;
             display: block;
         }
 
-        .alert.success {
-            border-left-color: #3ba55c;
-            color: #b5ffcb;
+        .status-message.error {
+            background: #ed424520;
+            color: #ed4245;
+            border: 1px solid #ed4245;
+            display: block;
         }
 
-        .thread-note {
-            color: #7584b5;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+        .scope-note {
+            margin-top: 20px;
+            padding: 10px;
+            background: #332e41;
+            border-radius: 5px;
+            color: #b5b9e0;
+            font-size: 14px;
+            border-left: 4px solid #f0b232;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Alert message -->
-        <div id="alert" class="alert"></div>
-
-        <!-- Header with authorization -->
         <div class="header">
-            <div class="logo">
-                <h1>discordtools.online <span>bot studio</span></h1>
-            </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="db-badge" id="dbBadge">
-                    <i class="fas fa-database"></i>
-                    <span id="dbText">mongodb cluster (offline)</span>
+            <div class="user-section" id="userSection">
+                <div class="avatar" id="avatar">
+                    <i class="fab fa-discord"></i>
                 </div>
-                <div class="auth-section">
-                    <div class="bot-avatar">
-                        <i class="fab fa-discord"></i>
-                    </div>
-                    <div class="auth-info" id="authInfo">
-                        <p>🔐 not authorized</p>
-                        <strong id="authName">── /authorize</strong>
-                    </div>
-                    <button class="auth-btn" id="authBtn" onclick="authorizeBot()">
-                        <i class="fab fa-discord"></i> connect bot
-                    </button>
+                <div class="user-info">
+                    <h2 id="username">Not Logged In</h2>
+                    <span class="nitro-badge" id="nitroStatus">Nitro Required</span>
                 </div>
             </div>
+            <button class="login-btn" id="loginBtn" onclick="login()">
+                <i class="fab fa-discord"></i> Login with Discord
+            </button>
         </div>
 
-        <!-- Tools Grid -->
-        <div class="tools-grid">
-            <!-- Bio Tools -->
-            <div class="tool-card">
-                <div class="tool-header">
-                    <i class="fas fa-feather-alt"></i>
-                    <h3>Bio Tools</h3>
-                </div>
-                <div>
-                    <label class="input-label">
-                        <i class="far fa-keyboard" style="margin-right: 5px;"></i> first line (type slowly)
-                    </label>
-                    <textarea class="styled-textarea" id="bioInput" rows="4" placeholder="h
-he
-hel
-hell
-hello" disabled>h
-he
-hel
-hell
-hello</textarea>
-                    
-                    <div class="preview-section">
-                        <div class="preview-title">
-                            <i class="fas fa-thread"></i> LIVE THREAD PREVIEW
+        <div class="main-content">
+            <div class="preview-card">
+                <h3><i class="fas fa-eye"></i> Live Profile Preview</h3>
+                <div class="profile-preview">
+                    <div class="banner" id="previewBanner" style="background: linear-gradient(90deg, #5865f2, #9b59b6)"></div>
+                    <div class="profile-info">
+                        <div class="profile-avatar" id="previewAvatar">
+                            <i class="fab fa-discord"></i>
                         </div>
-                        <div class="preview-box">
-                            <div class="preview-content" id="bioPreview">h<br>he<br>hel<br>hell<br>hello</div>
+                        <div class="profile-name" id="previewName">Username#0000</div>
+                        <div class="profile-status" id="previewStatus" style="margin-bottom: 10px; color: #b5b9e0;">
+                            <span id="previewEmoji">🎮</span> Online
                         </div>
-                    </div>
-                    <div class="thread-note">
-                        <i class="fas fa-sync-alt fa-xs"></i> bio updates as you type each line
-                    </div>
-                </div>
-            </div>
-
-            <!-- Name Tools -->
-            <div class="tool-card">
-                <div class="tool-header">
-                    <i class="fas fa-signature"></i>
-                    <h3>Name Tools</h3>
-                </div>
-                <div>
-                    <label class="input-label">
-                        <i class="far fa-keyboard" style="margin-right: 5px;"></i> first line (type letter by letter)
-                    </label>
-                    <textarea class="styled-textarea" id="nameInput" rows="4" placeholder="j
-ja
-jam
-jamm
-jammy" disabled>j
-ja
-jam
-jamm
-jammy</textarea>
-                    
-                    <div class="preview-section">
-                        <div class="preview-title">
-                            <i class="fas fa-thread"></i> LIVE THREAD PREVIEW
-                        </div>
-                        <div class="preview-box">
-                            <div class="preview-content" id="namePreview">j<br>ja<br>jam<br>jamm<br>jammy</div>
+                        <div class="profile-bio" id="previewBio">
+                            Click login to start
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Status Emoji Tool -->
-            <div class="tool-card">
-                <div class="tool-header">
-                    <i class="fas fa-smile"></i>
-                    <h3>Status Emoji</h3>
-                </div>
-                <div>
-                    <label class="input-label">
-                        <i class="far fa-smile"></i> set emoji
-                    </label>
-                    <div class="emoji-row">
-                        <input type="text" class="emoji-input" id="emojiInput" value="😄" placeholder="😄" disabled>
-                        <button class="btn-set" id="setEmojiBtn" onclick="setStatusEmoji()" disabled>
-                            <i class="far fa-save"></i> set
+            <div class="tools-section">
+                <h3 style="color: white; margin-bottom: 20px; font-size: 24px;">
+                    <i class="fas fa-magic"></i> Nitro Profile Tools
+                </h3>
+
+                <!-- Bio Tool -->
+                <div class="tool-group">
+                    <h4><i class="fas fa-feather-alt"></i> Animated Bio Builder</h4>
+                    <div class="bio-builder">
+                        <div class="line-input">
+                            <input type="text" id="bioInput" placeholder="Type a line...">
+                            <button onclick="addBioLine()" id="addBioBtn" disabled>Add</button>
+                        </div>
+                        <div class="bio-lines" id="bioLines"></div>
+                        <button class="save-btn" onclick="saveBio()" id="saveBioBtn" disabled>
+                            <i class="fas fa-save"></i> Save Bio to Discord
                         </button>
                     </div>
-                    
-                    <div class="preview-section">
-                        <div class="preview-title">
-                            <i class="fas fa-thread"></i> STATUS EMOJI SET TO:
-                        </div>
-                        <div class="status-emoji-display">
-                            <div class="big-emoji" id="emojiPreview">😄</div>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Footer with database status -->
-        <div class="footer">
-            <div class="footer-left">
-                <div class="db-status">
-                    <span class="pulse" id="dbPulse" style="background: #ed4245; box-shadow: 0 0 10px #ed4245;"></span>
-                    <span id="footerDbText">database: offline · 0 collections</span>
+                <!-- Gradient Banner Tool -->
+                <div class="tool-group">
+                    <h4><i class="fas fa-palette"></i> Gradient Banner</h4>
+                    <div class="gradient-picker" id="gradientPicker">
+                        <div class="gradient-option" style="background: linear-gradient(90deg, #5865f2, #9b59b6)" onclick="selectGradient(this, 'linear-gradient(90deg, #5865f2, #9b59b6)')"></div>
+                        <div class="gradient-option" style="background: linear-gradient(90deg, #ff6b6b, #feca57)" onclick="selectGradient(this, 'linear-gradient(90deg, #ff6b6b, #feca57)')"></div>
+                        <div class="gradient-option" style="background: linear-gradient(90deg, #57f287, #5865f2)" onclick="selectGradient(this, 'linear-gradient(90deg, #57f287, #5865f2)')"></div>
+                        <div class="gradient-option" style="background: linear-gradient(90deg, #f0b232, #ed4245)" onclick="selectGradient(this, 'linear-gradient(90deg, #f0b232, #ed4245)')"></div>
+                        <div class="gradient-option" style="background: linear-gradient(90deg, #9b59b6, #3498db)" onclick="selectGradient(this, 'linear-gradient(90deg, #9b59b6, #3498db)')"></div>
+                        <div class="gradient-option" style="background: linear-gradient(90deg, #1abc9c, #e67e22)" onclick="selectGradient(this, 'linear-gradient(90deg, #1abc9c, #e67e22)')"></div>
+                    </div>
+                    <button class="save-btn" onclick="saveBanner()" id="saveBannerBtn" disabled>
+                        <i class="fas fa-save"></i> Save Banner to Discord
+                    </button>
                 </div>
-                <div>
-                    <i class="fas fa-robot"></i> bot authorized: <span id="botAuthStatus">false</span>
+
+                <!-- Status Emoji Tool -->
+                <div class="tool-group">
+                    <h4><i class="fas fa-smile"></i> Status Emoji</h4>
+                    <div class="emoji-selector" id="emojiSelector">
+                        <button class="emoji-btn" onclick="selectEmoji(this, '🎮')">🎮</button>
+                        <button class="emoji-btn" onclick="selectEmoji(this, '🎧')">🎧</button>
+                        <button class="emoji-btn" onclick="selectEmoji(this, '🌙')">🌙</button>
+                        <button class="emoji-btn" onclick="selectEmoji(this, '💻')">💻</button>
+                        <button class="emoji-btn" onclick="selectEmoji(this, '📚')">📚</button>
+                        <button class="emoji-btn" onclick="selectEmoji(this, '⚡')">⚡</button>
+                    </div>
+                    <button class="save-btn" onclick="saveStatus()" id="saveStatusBtn" disabled>
+                        <i class="fas fa-save"></i> Save Status to Discord
+                    </button>
                 </div>
-            </div>
-            <div class="footer-right">
-                <i class="fas fa-history"></i> tools auto-save to disk
-                <i class="fas fa-shield-alt"></i>
+
+                <div class="scope-note" id="scopeNote">
+                    <i class="fas fa-info-circle"></i>
+                    Login required to modify your profile. We request only necessary permissions.
+                </div>
+
+                <div id="statusMessage" class="status-message"></div>
             </div>
         </div>
     </div>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <script>
-        // Configuration - USING YOUR PROVIDED VALUES
-        const API_URL = 'http://localhost:3000'; // Your backend URL
-        const DISCORD_CLIENT_ID = '1477301598962323546'; // Your Discord Client ID
-        const REDIRECT_URI = 'https://timshadow1.github.io/discordtools'; // Your redirect URI
-
+        // Discord OAuth2 Configuration
+        const CLIENT_ID = 'YOUR_CLIENT_ID'; // You need to register your app
+        const REDIRECT_URI = window.location.origin + window.location.pathname;
+        const DISCORD_API = 'https://discord.com/api/v10';
+        
         // State
-        let isAuthorized = false;
         let accessToken = null;
-        let userId = null;
-        let userName = 'discord bot #2504';
+        let userData = null;
+        let selectedGradient = null;
+        let selectedEmoji = '🎮';
+        let bioLines = [];
 
-        // Check if we have code in URL (OAuth2 callback)
-        function checkAuth() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            
-            if (code) {
-                // Show loading state
-                showAlert('Authorizing with Discord...', 'success');
-                document.getElementById('authBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> authorizing...';
+        // Check for OAuth2 callback
+        const urlParams = new URLSearchParams(window.location.hash.substring(1));
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        
+        if (hashParams.get('access_token')) {
+            accessToken = hashParams.get('access_token');
+            localStorage.setItem('discord_token', accessToken);
+            window.location.hash = '';
+            fetchUserData();
+        } else {
+            // Check localStorage
+            const savedToken = localStorage.getItem('discord_token');
+            if (savedToken) {
+                accessToken = savedToken;
+                fetchUserData();
+            }
+        }
+
+        // Login function
+        function login() {
+            const scopes = ['identify', 'guilds', 'guilds.members.read'];
+            const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${scopes.join('%20')}`;
+            window.location.href = oauthUrl;
+        }
+
+        // Fetch user data from Discord
+        async function fetchUserData() {
+            try {
+                const response = await fetch(`${DISCORD_API}/users/@me`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch user data');
+
+                userData = await response.json();
                 
-                // Simulate successful authorization (since we don't have backend)
-                // In a real app, you'd exchange the code for a token here
-                setTimeout(() => {
-                    // Mock successful authorization
-                    isAuthorized = true;
-                    accessToken = 'mock_token_' + Math.random();
-                    userId = '123456789';
-                    
-                    // Update UI
-                    updateAuthUI();
-                    enableTools();
-                    
-                    // Clean URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    
-                    showAlert('Successfully authorized as ' + userName, 'success');
-                    
-                    // Update database status
-                    updateDatabaseStatus(true);
-                }, 1500);
-            } else {
-                // Check localStorage for mock session
-                const savedAuth = localStorage.getItem('discord_auth');
-                if (savedAuth === 'true') {
-                    isAuthorized = true;
-                    accessToken = 'saved_token';
-                    userId = '123456789';
-                    updateAuthUI();
-                    enableTools();
-                    updateDatabaseStatus(true);
+                // Update UI
+                document.getElementById('username').textContent = `${userData.username}#${userData.discriminator}`;
+                document.getElementById('previewName').textContent = `${userData.username}#${userData.discriminator}`;
+                document.getElementById('loginBtn').innerHTML = '<i class="fas fa-check"></i> Logged In';
+                document.getElementById('loginBtn').disabled = true;
+                
+                // Check Nitro
+                if (userData.premium_type > 0) {
+                    document.getElementById('nitroStatus').innerHTML = '✨ NITRO ACTIVE';
                 }
+                
+                // Enable tools
+                document.getElementById('addBioBtn').disabled = false;
+                document.getElementById('saveBioBtn').disabled = false;
+                document.getElementById('saveBannerBtn').disabled = false;
+                document.getElementById('saveStatusBtn').disabled = false;
+                
+                // Load user's current data
+                loadUserData();
+                
+                showStatus('Successfully logged in!', 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('Failed to load user data', 'error');
+                logout();
             }
         }
 
-        // Update database status UI
-        function updateDatabaseStatus(online) {
-            const dbBadge = document.getElementById('dbBadge');
-            const dbText = document.getElementById('dbText');
-            const footerDbText = document.getElementById('footerDbText');
-            const dbPulse = document.getElementById('dbPulse');
-            const botAuthStatus = document.getElementById('botAuthStatus');
-
-            if (online) {
-                dbBadge.innerHTML = '<i class="fas fa-database"></i> <span id="dbText">mongodb ● connected</span>';
-                dbPulse.style.background = '#3ba55c';
-                dbPulse.style.boxShadow = '0 0 10px #3ba55c';
-                footerDbText.innerHTML = 'database: online · 3 collections';
-                botAuthStatus.textContent = 'true';
-            } else {
-                dbBadge.innerHTML = '<i class="fas fa-database"></i> <span id="dbText">mongodb cluster (offline)</span>';
-                dbPulse.style.background = '#ed4245';
-                dbPulse.style.boxShadow = '0 0 10px #ed4245';
-                footerDbText.innerHTML = 'database: offline · 0 collections';
-                botAuthStatus.textContent = 'false';
-            }
-        }
-
-        // Update auth UI
-        function updateAuthUI() {
-            const authInfo = document.getElementById('authInfo');
-            const authBtn = document.getElementById('authBtn');
-            const authName = document.getElementById('authName');
-
-            if (isAuthorized) {
-                authInfo.innerHTML = '<p>✅ authorized as</p><strong id="authName">' + userName + '</strong>';
-                authBtn.innerHTML = '<i class="fas fa-check-circle"></i> authorized';
-                authBtn.disabled = true;
-            } else {
-                authInfo.innerHTML = '<p>🔐 not authorized</p><strong id="authName">── /authorize</strong>';
-                authBtn.innerHTML = '<i class="fab fa-discord"></i> connect bot';
-                authBtn.disabled = false;
-            }
-        }
-
-        // Enable all tools
-        function enableTools() {
-            document.getElementById('bioInput').disabled = false;
-            document.getElementById('nameInput').disabled = false;
-            document.getElementById('emojiInput').disabled = false;
-            document.getElementById('setEmojiBtn').disabled = false;
-        }
-
-        // Authorize bot - redirect to Discord
-        function authorizeBot() {
-            if (isAuthorized) return;
+        // Load user's current data (you'd need a backend to store this)
+        function loadUserData() {
+            // In a real app, you'd fetch from your database
+            const savedBio = localStorage.getItem(`bio_${userData.id}`);
+            const savedBanner = localStorage.getItem(`banner_${userData.id}`);
+            const savedEmoji = localStorage.getItem(`emoji_${userData.id}`);
             
-            const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
-            window.location.href = discordAuthUrl;
+            if (savedBio) {
+                bioLines = JSON.parse(savedBio);
+                updateBioDisplay();
+            }
+            
+            if (savedBanner) {
+                document.getElementById('previewBanner').style.background = savedBanner;
+            }
+            
+            if (savedEmoji) {
+                selectedEmoji = savedEmoji;
+                document.getElementById('previewEmoji').textContent = savedEmoji;
+            }
         }
 
-        // Set status emoji
-        function setStatusEmoji() {
-            if (!isAuthorized) {
-                showAlert('Please authorize the bot first!', 'error');
+        // Bio functions
+        function addBioLine() {
+            const input = document.getElementById('bioInput');
+            if (input.value.trim()) {
+                bioLines.push(input.value.trim());
+                updateBioDisplay();
+                input.value = '';
+            }
+        }
+
+        function updateBioDisplay() {
+            document.getElementById('bioLines').innerHTML = bioLines.join('<br>');
+            document.getElementById('previewBio').innerHTML = bioLines.join('<br>') || 'Click add to build your bio';
+        }
+
+        async function saveBio() {
+            try {
+                // This requires a backend server to store the bio
+                // Discord API doesn't have an endpoint to set bio directly
+                
+                // You'd send to your backend:
+                // await fetch('https://your-backend.com/api/save-bio', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Authorization': `Bearer ${accessToken}`,
+                //         'Content-Type': 'application/json'
+                //     },
+                //     body: JSON.stringify({ bio: bioLines, userId: userData.id })
+                // });
+                
+                localStorage.setItem(`bio_${userData.id}`, JSON.stringify(bioLines));
+                showStatus('Bio saved locally! (Backend needed for Discord sync)', 'success');
+                
+            } catch (error) {
+                showStatus('Error saving bio', 'error');
+            }
+        }
+
+        // Banner functions
+        function selectGradient(element, gradient) {
+            document.querySelectorAll('.gradient-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedGradient = gradient;
+            document.getElementById('previewBanner').style.background = gradient;
+        }
+
+        async function saveBanner() {
+            if (!selectedGradient) {
+                showStatus('Select a gradient first', 'error');
                 return;
             }
-
-            const emoji = document.getElementById('emojiInput').value || '😄';
-            document.getElementById('emojiPreview').textContent = emoji;
             
-            // Save to localStorage as mock database
-            localStorage.setItem('saved_emoji', emoji);
-            
-            showAlert('Status emoji saved to database!', 'success');
-            
-            // Log to console as mock database write
-            console.log('[📀 database] status_emojis collection: { emoji: "' + emoji + '" }');
+            try {
+                // Discord API doesn't have a banner endpoint for users
+                // This would require a backend and Discord Bot with proper permissions
+                
+                localStorage.setItem(`banner_${userData.id}`, selectedGradient);
+                showStatus('Banner preview saved! (Discord API limitation)', 'success');
+                
+            } catch (error) {
+                showStatus('Error saving banner', 'error');
+            }
         }
 
-        // Show alert message
-        function showAlert(message, type) {
-            const alert = document.getElementById('alert');
-            alert.textContent = message;
-            alert.className = 'alert ' + (type === 'success' ? 'success' : '');
-            alert.classList.add('show');
+        // Status functions
+        function selectEmoji(element, emoji) {
+            document.querySelectorAll('.emoji-btn').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedEmoji = emoji;
+            document.getElementById('previewEmoji').textContent = emoji;
+        }
+
+        async function saveStatus() {
+            try {
+                // Set custom status via Discord API
+                const response = await fetch(`${DISCORD_API}/users/@me/settings`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        custom_status: {
+                            text: '',
+                            emoji_name: selectedEmoji
+                        }
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to set status');
+                
+                localStorage.setItem(`emoji_${userData.id}`, selectedEmoji);
+                showStatus('Status updated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('Error setting status. Make sure you have the correct permissions.', 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = `status-message ${type}`;
             
             setTimeout(() => {
-                alert.classList.remove('show');
-            }, 3000);
+                status.style.display = 'none';
+            }, 5000);
         }
 
-        // Update previews
-        function updatePreviews() {
-            const bioInput = document.getElementById('bioInput');
-            const nameInput = document.getElementById('nameInput');
-            
-            if (bioInput.value) {
-                document.getElementById('bioPreview').innerHTML = bioInput.value.replace(/\n/g, '<br>');
-                
-                // Mock database save when authorized
-                if (isAuthorized) {
-                    console.log('[📀 database] bios_autosave: { content: "' + bioInput.value.substring(0, 30) + '..." }');
-                }
-            }
-            
-            if (nameInput.value) {
-                document.getElementById('namePreview').innerHTML = nameInput.value.replace(/\n/g, '<br>');
-                
-                if (isAuthorized) {
-                    console.log('[📀 database] names_autosave: { content: "' + nameInput.value.substring(0, 30) + '..." }');
-                }
-            }
-        }
-
-        // Load saved data from localStorage (mock database)
-        function loadSavedData() {
-            const savedEmoji = localStorage.getItem('saved_emoji');
-            if (savedEmoji) {
-                document.getElementById('emojiInput').value = savedEmoji;
-                document.getElementById('emojiPreview').textContent = savedEmoji;
-            }
-        }
-
-        // Event listeners
-        document.getElementById('bioInput').addEventListener('input', updatePreviews);
-        document.getElementById('nameInput').addEventListener('input', updatePreviews);
-        document.getElementById('emojiInput').addEventListener('input', function(e) {
-            if (!isAuthorized) return;
-            document.getElementById('emojiPreview').textContent = e.target.value || '😄';
-        });
-
-        // Initialize
-        checkAuth();
-        updatePreviews();
-        loadSavedData();
-
-        // For demo purposes, if we want to test authorized state without Discord
-        // You can click this in console: testAuth()
-        window.testAuth = function() {
-            isAuthorized = true;
-            accessToken = 'test_token';
-            userId = 'test123';
-            updateAuthUI();
-            enableTools();
-            updateDatabaseStatus(true);
-            localStorage.setItem('discord_auth', 'true');
-            showAlert('Test mode: Authorized!', 'success');
-        };
-
-        window.testLogout = function() {
-            isAuthorized = false;
+        function logout() {
             accessToken = null;
-            userId = null;
-            updateAuthUI();
-            document.getElementById('bioInput').disabled = true;
-            document.getElementById('nameInput').disabled = true;
-            document.getElementById('emojiInput').disabled = true;
-            document.getElementById('setEmojiBtn').disabled = true;
-            updateDatabaseStatus(false);
-            localStorage.removeItem('discord_auth');
-            showAlert('Logged out', 'error');
-        };
+            userData = null;
+            localStorage.removeItem('discord_token');
+            window.location.reload();
+        }
     </script>
 </body>
 </html>
